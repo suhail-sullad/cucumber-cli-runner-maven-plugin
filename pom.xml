@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cucumber.cli.runner.plugin</groupId>
+	<artifactId>cucumber-cli-runner-maven-plugin</artifactId>
+	<version>1.2-SNAPSHOT</version>
+	<packaging>maven-plugin</packaging>
+
+	<name>cucumber-cli-runner-maven-plugin Maven Plugin</name>
+
+	<!-- FIXME change it to the project's website -->
+	<url>http://www.example.com</url>
+
+	<prerequisites>
+		<maven>${maven.version}</maven>
+
+	</prerequisites>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.version>3.3.9</maven.version>
+		<jackson.version>2.9.0</jackson.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.cfg4j</groupId>
+			<artifactId>cfg4j-core</artifactId>
+			<version>4.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.intuit.karate</groupId>
+			<artifactId>karate-apache</artifactId>
+			<version>0.7.0</version>
+
+		</dependency>
+		<dependency>
+			<groupId>com.intuit.karate</groupId>
+			<artifactId>karate-core</artifactId>
+			<version>0.7.0</version>
+			<scope>system</scope>
+			<systemPath>C:\Users\suhail_sullad\karatelocal\mykarate\karate\karate-core\target\karate-core-0.7.0.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-jvm-deps</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-picocontainer</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-html</artifactId>
+			<version>0.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.9.9</version>
+		</dependency>
+		<dependency>
+			<!-- Note: core-annotations version x.y.0 is generally compatible with 
+				(identical to) version x.y.1, x.y.2, etc. -->
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.masterthought</groupId>
+			<artifactId>cucumber-reporting</artifactId>
+			<version>3.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>${maven.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>${maven.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>${maven.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-compat</artifactId>
+			<version>${maven.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<version>3.5.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugin-testing</groupId>
+			<artifactId>maven-plugin-testing-harness</artifactId>
+			<version>3.3.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
+				defaults (may be moved to parent pom) -->
+			<plugins>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_maven-plugin_packaging -->
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.0.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.7.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-plugin-plugin</artifactId>
+					<version>3.5.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.20.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.0.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-invoker-plugin</artifactId>
+					<version>3.0.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<!-- <goalPrefix>maven-archetype-plugin</goalPrefix> -->
+					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+				</configuration>
+				<executions>
+					<execution>
+						<id>mojo-descriptor</id>
+						<goals>
+							<goal>descriptor</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>help-goal</id>
+						<goals>
+							<goal>helpmojo</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>run-its</id>
+			<build>
+
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-invoker-plugin</artifactId>
+						<version>3.0.1</version>
+						<configuration>
+							<debug>true</debug>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<pomIncludes>
+								<pomInclude>*/pom.xml</pomInclude>
+							</pomIncludes>
+							<postBuildHookScript>verify</postBuildHookScript>
+							<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+							<settingsFile>src/it/settings.xml</settingsFile>
+							<goals>
+								<goal>clean</goal>
+								<goal>test-compile</goal>
+							</goals>
+						</configuration>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<goals>
+									<goal>install</goal>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<repositories>
+		<repository>
+			<id>myMavenRepo</id>
+			<url>${myMavenRepoReadUrl}</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>myMavenRepo</id>
+			<url>${myMavenRepoWriteUrl}</url>
+		</repository>
+		<snapshotRepository>
+			<id>myMavenRepo</id>
+			<url>${myMavenRepoWriteUrl}</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<!-- <distributionManagement> <repository> <id>bintray-suhail-sullad-cucumber-cli-runner-maven-plugin</id> 
+		<name>suhail-sullad-cucumber-cli-runner-maven-plugin</name> <url>https://api.bintray.com/maven/suhail-sullad/cucumber-cli-runner-maven-plugin/cucumber.cli.runner.plugin/;publish=1</url> 
+		</repository> </distributionManagement> -->
+</project>
