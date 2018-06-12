@@ -8,7 +8,7 @@
 
 	<groupId>cucumber.cli.runner.plugin</groupId>
 	<artifactId>cucumber-cli-runner-maven-plugin</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2.3-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>cucumber-cli-runner-maven-plugin Maven Plugin</name>
@@ -30,6 +30,11 @@
 	</properties>
 
 	<dependencies>
+	<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -67,9 +72,7 @@
 		<dependency>
 			<groupId>com.intuit.karate</groupId>
 			<artifactId>karate-core</artifactId>
-			<version>0.7.0</version>
-			<scope>system</scope>
-			<systemPath>C:\Users\suhail_sullad\karatelocal\mykarate\karate\karate-core\target\karate-core-0.7.0.jar</systemPath>
+			<version>0.7.1</version>
 		</dependency>
 		<dependency>
 			<groupId>info.cukes</groupId>
@@ -156,7 +159,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
 				defaults (may be moved to parent pom) -->
@@ -267,6 +269,15 @@
 		</profile>
 	</profiles>
 	<repositories>
+	
+				<repository>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+					<id>bintray-suhail-sullad-karate</id>
+					<name>bintray</name>
+					<url>https://dl.bintray.com/suhail-sullad/karate</url>
+				</repository>
 		<repository>
 			<id>myMavenRepo</id>
 			<url>${myMavenRepoReadUrl}</url>
@@ -282,6 +293,9 @@
 			<url>${myMavenRepoWriteUrl}</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<!-- <distributionManagement> <repository> <id>bintray-suhail-sullad-cucumber-cli-runner-maven-plugin</id> 
+		<name>suhail-sullad-cucumber-cli-runner-maven-plugin</name> <url>https://api.bintray.com/maven/suhail-sullad/cucumber-cli-runner-maven-plugin/cucumber.cli.runner.plugin/;publish=1</url> 
+		</repository> </distributionManagement> -->
 	<!-- <distributionManagement> <repository> <id>bintray-suhail-sullad-cucumber-cli-runner-maven-plugin</id> 
 		<name>suhail-sullad-cucumber-cli-runner-maven-plugin</name> <url>https://api.bintray.com/maven/suhail-sullad/cucumber-cli-runner-maven-plugin/cucumber.cli.runner.plugin/;publish=1</url> 
 		</repository> </distributionManagement> -->

@@ -10,6 +10,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import org.cfg4j.provider.GenericType;
 import org.joda.time.DateTime;
 
@@ -48,6 +49,9 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	 */
 	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
 	private File outputDirectory;
+	
+	@Parameter(defaultValue = "${project}", readonly = true)
+	private MavenProject mavenProject;
 
 	@Parameter(defaultValue = "${project.testClasspathElements}", readonly = true)
 	private List<String> additionalClasspathElements = new ArrayList<>();
@@ -124,7 +128,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	}
 
 	private void run_api_parallel(Boolean isTags) throws IOException, InterruptedException, TagFilterException {
-		List<String> features = getfilelist(PropertyLoader.provider.getProperty("apifeaturefilepath", String.class),
+		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("apifeaturefilepath", String.class),
 				"feature");
 		for (String feature : features) {
 			executeApiTests(feature, isTags);
@@ -133,7 +137,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	private void run_api_features_sequential() throws IOException {
 
-		List<String> features = getfilelist(PropertyLoader.provider.getProperty("apifeaturefilepath", String.class),
+		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("apifeaturefilepath", String.class),
 				"feature");
 		for (String string : features) {
 			File file = new File(string);
@@ -150,7 +154,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	private void run_ui_sequentially() throws IOException, InterruptedException {
 		List<String> arguments = new ArrayList<String>();
-		arguments.addAll(getfilelist(PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature"));
+		arguments.addAll(getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature"));
 		arguments.add("--format");
 		arguments.add("pretty");
 		arguments.add("--format");
@@ -187,8 +191,9 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		});
 		for (String runnabletags : tags) {
 			List<String> arguments = new ArrayList<String>();
+			
 			arguments.addAll(
-					getfilelist(PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature"));
+					getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature"));
 			arguments.add("--format");
 			arguments.add("pretty");
 			arguments.add("--format");
@@ -218,7 +223,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	public void run_ui_features_in_parallel() throws IOException, InterruptedException {
 
-		List<String> features = getfilelist(PropertyLoader.provider.getProperty("featurefilepath", String.class),
+		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("featurefilepath", String.class),
 				"feature");
 		for (String feature : features) {
 			System.out.println("Current Feature: " + feature);
