@@ -1,0 +1,14 @@
+sudo: false
+language: java
+
+
+
+
+
+
+deploy:
+  provider: script
+  script: "mvn clean compile deploy"
+  skip_cleanup: true
+  on:
+    tags: true
