@@ -69,7 +69,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		getLog().info("Initializing properties...");
 		PropertyLoader.init();
 
-		List<ExecutionModes> parallelModes = PropertyLoader.provider.getProperty("parallel",
+		List<ExecutionModes> parallelModes = PropertyLoader.provider.getProperty("parallelmode",
 				new GenericType<List<ExecutionModes>>() {
 				});
 		getLog().info("Initializing ThreadPool...");
