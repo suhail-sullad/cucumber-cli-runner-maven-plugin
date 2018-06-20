@@ -326,10 +326,10 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	}
 
 	public List<String> getfilelist(String pathname, String type) throws IOException {
-		String cleanPath = String.format("\"%s\"",StringUtils.removeAll(pathname, "\"").replaceAll("\\", "/"));
-		getLog().debug("Getting file from:"+cleanPath);
+		String cleanPath = StringUtils.removeAll(pathname, "\"").replaceAll("\\", "/");
+		getLog().debug("Getting file from:\""+cleanPath+"\"");
 		return FileUtils
-				.listFilesAndDirs(new File(cleanPath).getAbsoluteFile(), TrueFileFilter.INSTANCE,
+				.listFilesAndDirs(new File("\""+cleanPath+"\"").getAbsoluteFile(), TrueFileFilter.INSTANCE,
 						DirectoryFileFilter.DIRECTORY)
 				.stream().filter(file -> file.getName().endsWith(type)).map(f -> f.getPath().replace("\\", "/"))
 				.collect(Collectors.toList());
