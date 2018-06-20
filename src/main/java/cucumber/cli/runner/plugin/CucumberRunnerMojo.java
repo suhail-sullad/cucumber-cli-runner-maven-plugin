@@ -325,6 +325,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	}
 
 	public List<String> getfilelist(String pathname, String type) throws IOException {
+		getLog().debug("Getting file from:"+pathname);
 		return FileUtils
 				.listFilesAndDirs(new File(pathname).getAbsoluteFile(), TrueFileFilter.INSTANCE,
 						DirectoryFileFilter.DIRECTORY)
