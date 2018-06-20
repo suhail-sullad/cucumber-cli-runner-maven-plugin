@@ -3,6 +3,7 @@ package cucumber.cli.runner.plugin;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -325,9 +326,10 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	}
 
 	public List<String> getfilelist(String pathname, String type) throws IOException {
-		getLog().debug("Getting file from:"+pathname);
+		String cleanPath = StringUtils.removeAll(pathname, "\"").replaceAll("\\", "/");
+		getLog().debug("Getting file from:"+cleanPath);
 		return FileUtils
-				.listFilesAndDirs(new File(pathname).getAbsoluteFile(), TrueFileFilter.INSTANCE,
+				.listFilesAndDirs(new File(String.format("\"%s\"",cleanPath)).getAbsoluteFile(), TrueFileFilter.INSTANCE,
 						DirectoryFileFilter.DIRECTORY)
 				.stream().filter(file -> file.getName().endsWith(type)).map(f -> f.getPath().replace("\\", "/"))
 				.collect(Collectors.toList());
