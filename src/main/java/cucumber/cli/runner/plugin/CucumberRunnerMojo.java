@@ -74,7 +74,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 				new GenericType<List<ExecutionModes>>() {
 				});
 		getLog().info("Initializing ThreadPool...");
-		featureRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+		featureRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,Executors.privilegedThreadFactory());
 		getLog().info("Creating output directories...");
 		String[] opDir = { outputDirectory.getPath() + "/cucumber-reports/api" };
 		for (String string : opDir) {
