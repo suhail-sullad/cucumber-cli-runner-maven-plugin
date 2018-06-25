@@ -317,6 +317,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 			final boolean isFiltered = cucumberTagStatement.getGherkinModel().getTags().stream()
 					.anyMatch(t -> tags.contains(t.getName()))
 					|| feature.getGherkinFeature().getTags().stream().anyMatch(t -> tags.contains(t.getName()));
+							System.err.println("Feature status:"+ isFiltered+ " For " + cucumberTagStatement.getVisualName() + " of feature "
+						+ feature.getPath() + " At line: " + cucumberTagStatement.getGherkinModel().getLine());
 			if (!isFiltered) {
 				System.err.println("skipping feature element " + cucumberTagStatement.getVisualName() + " of feature "
 						+ feature.getPath() + " At line: " + cucumberTagStatement.getGherkinModel().getLine());
