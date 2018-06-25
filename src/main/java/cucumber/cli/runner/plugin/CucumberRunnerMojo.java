@@ -57,8 +57,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.testClasspathElements}", readonly = true)
 	private List<String> additionalClasspathElements = new ArrayList<>();
 
-	private static ExecutorService featureRunner = null;
-	private static List<CompletableFuture<Supplier<Byte>>> featureStatus = new ArrayList<>();
+	private ExecutorService featureRunner = null;
+	private List<CompletableFuture<Supplier<Byte>>> featureStatus = new ArrayList<>();
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
