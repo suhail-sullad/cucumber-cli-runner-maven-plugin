@@ -57,8 +57,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.testClasspathElements}", readonly = true)
 	private List<String> additionalClasspathElements = new ArrayList<>();
 
-	private static ExecutorService featureRunner = null;
-	private static List<CompletableFuture<Supplier<Byte>>> featureStatus = new ArrayList<>();
+	private ExecutorService featureRunner = null;
+	private List<CompletableFuture<Supplier<Byte>>> featureStatus = new ArrayList<>();
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -74,7 +74,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 				new GenericType<List<ExecutionModes>>() {
 				});
 		getLog().info("Initializing ThreadPool...");
-		featureRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+		featureRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,Executors.privilegedThreadFactory());
 		getLog().info("Creating output directories...");
 		String[] opDir = { outputDirectory.getPath() + "/cucumber-reports/api" };
 		for (String string : opDir) {
@@ -317,6 +317,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 			final boolean isFiltered = cucumberTagStatement.getGherkinModel().getTags().stream()
 					.anyMatch(t -> tags.contains(t.getName()))
 					|| feature.getGherkinFeature().getTags().stream().anyMatch(t -> tags.contains(t.getName()));
+							System.err.println("Feature status:"+ isFiltered+ " For " + cucumberTagStatement.getVisualName() + " of feature "
+						+ feature.getPath() + " At line: " + cucumberTagStatement.getGherkinModel().getLine());
 			if (!isFiltered) {
 				System.err.println("skipping feature element " + cucumberTagStatement.getVisualName() + " of feature "
 						+ feature.getPath() + " At line: " + cucumberTagStatement.getGherkinModel().getLine());
@@ -326,6 +328,11 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	}
 
 	public List<String> getfilelist(String pathname, String type) throws IOException {
+<<<<<<< HEAD
+=======
+		
+		
+>>>>>>> 7810c1498754f416b69421b517c8c373614329c9
 		return FileUtils
 				.listFilesAndDirs(new File(pathname).getAbsoluteFile(), TrueFileFilter.INSTANCE,
 						DirectoryFileFilter.DIRECTORY)
