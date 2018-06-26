@@ -50,7 +50,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	 */
 	@Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
 	private File outputDirectory;
-	
+
 	@Parameter(defaultValue = "${project}", readonly = true)
 	private MavenProject mavenProject;
 
@@ -74,7 +74,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 				new GenericType<List<ExecutionModes>>() {
 				});
 		getLog().info("Initializing ThreadPool...");
-		featureRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,Executors.privilegedThreadFactory());
+		featureRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
+				Executors.privilegedThreadFactory());
 		getLog().info("Creating output directories...");
 		String[] opDir = { outputDirectory.getPath() + "/cucumber-reports/api" };
 		for (String string : opDir) {
@@ -129,8 +130,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	}
 
 	private void run_api_parallel(Boolean isTags) throws IOException, InterruptedException, TagFilterException {
-		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("apifeaturefilepath", String.class),
-				"feature");
+		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath() + File.separator
+				+ PropertyLoader.provider.getProperty("apifeaturefilepath", String.class), "feature");
 		for (String feature : features) {
 			executeApiTests(feature, isTags);
 		}
@@ -138,8 +139,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	private void run_api_features_sequential() throws IOException {
 
-		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("apifeaturefilepath", String.class),
-				"feature");
+		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath() + File.separator
+				+ PropertyLoader.provider.getProperty("apifeaturefilepath", String.class), "feature");
 		for (String string : features) {
 			File file = new File(string);
 			KarateFeature kf = new KarateFeature(file);
@@ -155,7 +156,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	private void run_ui_sequentially() throws IOException, InterruptedException {
 		List<String> arguments = new ArrayList<String>();
-		arguments.addAll(getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature"));
+		arguments.addAll(getfilelist(mavenProject.getBasedir().getAbsolutePath() + File.separator
+				+ PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature"));
 		arguments.add("--format");
 		arguments.add("pretty");
 		arguments.add("--format");
@@ -192,9 +194,9 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		});
 		for (String runnabletags : tags) {
 			List<String> arguments = new ArrayList<String>();
-			
-			arguments.addAll(
-					getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature"));
+
+			arguments.addAll(getfilelist(mavenProject.getBasedir().getAbsolutePath() + File.separator
+					+ PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature"));
 			arguments.add("--format");
 			arguments.add("pretty");
 			arguments.add("--format");
@@ -224,8 +226,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	public void run_ui_features_in_parallel() throws IOException, InterruptedException {
 
-		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath()+File.separator+PropertyLoader.provider.getProperty("featurefilepath", String.class),
-				"feature");
+		List<String> features = getfilelist(mavenProject.getBasedir().getAbsolutePath() + File.separator
+				+ PropertyLoader.provider.getProperty("featurefilepath", String.class), "feature");
 		for (String feature : features) {
 			System.out.println("Current Feature: " + feature);
 			List<String> arguments = new ArrayList<String>();
@@ -300,6 +302,12 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	public void executeTests(final String[] args, final Boolean isTags,
 			BiFunction<String[], Boolean, Supplier<Byte>> executionFunction) {
+		try {
+			Thread.currentThread().setContextClassLoader(getClassLoader(Thread.currentThread().getContextClassLoader()));
+		} catch (MojoExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		getLog().info("Executing tests on:" + Thread.currentThread());
 		CompletableFuture<Supplier<Byte>> future = CompletableFuture
 				.supplyAsync(() -> executionFunction.apply(args, isTags), featureRunner);
@@ -317,10 +325,11 @@ public class CucumberRunnerMojo extends AbstractMojo {
 			final boolean isFiltered = cucumberTagStatement.getGherkinModel().getTags().stream()
 					.anyMatch(t -> tags.contains(t.getName()))
 					|| feature.getGherkinFeature().getTags().stream().anyMatch(t -> tags.contains(t.getName()));
-							System.err.println("Feature status:"+ isFiltered+ " For " + cucumberTagStatement.getVisualName() + " of feature "
-						+ feature.getPath() + " At line: " + cucumberTagStatement.getGherkinModel().getLine());
+			getLog().debug(
+					"Feature status:" + isFiltered + " For " + cucumberTagStatement.getVisualName() + " of feature "
+							+ feature.getPath() + " At line: " + cucumberTagStatement.getGherkinModel().getLine());
 			if (!isFiltered) {
-				System.err.println("skipping feature element " + cucumberTagStatement.getVisualName() + " of feature "
+				getLog().debug("skipping feature element " + cucumberTagStatement.getVisualName() + " of feature "
 						+ feature.getPath() + " At line: " + cucumberTagStatement.getGherkinModel().getLine());
 				iterator.remove();
 			}
@@ -328,11 +337,6 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	}
 
 	public List<String> getfilelist(String pathname, String type) throws IOException {
-<<<<<<< HEAD
-=======
-		
-		
->>>>>>> 7810c1498754f416b69421b517c8c373614329c9
 		return FileUtils
 				.listFilesAndDirs(new File(pathname).getAbsoluteFile(), TrueFileFilter.INSTANCE,
 						DirectoryFileFilter.DIRECTORY)

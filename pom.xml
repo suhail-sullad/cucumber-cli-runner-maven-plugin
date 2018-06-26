@@ -8,7 +8,7 @@
 
 	<groupId>cucumber.cli.runner.plugin</groupId>
 	<artifactId>cucumber-cli-runner-maven-plugin</artifactId>
-	<version>1.2.2-SNAPSHOT</version>
+	<version>1.2.3-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>cucumber-cli-runner-maven-plugin Maven Plugin</name>
