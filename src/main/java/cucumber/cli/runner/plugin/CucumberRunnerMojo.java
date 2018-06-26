@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -22,11 +23,17 @@ import net.masterthought.cucumber.ReportBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -35,6 +42,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.google.common.reflect.ClassPath;
 import com.intuit.karate.cucumber.KarateFeature;
 import com.intuit.karate.cucumber.KarateJunitAndJsonReporter;
 import com.intuit.karate.cucumber.KarateRuntime;
@@ -66,8 +74,8 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		logConfiguration();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(getClassLoader(classLoader));
-
 		getLog().info("Initializing properties...");
+		listLoadedClasses(Thread.currentThread().getContextClassLoader());
 		PropertyLoader.init();
 
 		List<ExecutionModes> parallelModes = PropertyLoader.provider.getProperty("parallelmode",
@@ -302,12 +310,6 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	public void executeTests(final String[] args, final Boolean isTags,
 			BiFunction<String[], Boolean, Supplier<Byte>> executionFunction) {
-		try {
-			Thread.currentThread().setContextClassLoader(getClassLoader(Thread.currentThread().getContextClassLoader()));
-		} catch (MojoExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		getLog().info("Executing tests on:" + Thread.currentThread());
 		CompletableFuture<Supplier<Byte>> future = CompletableFuture
 				.supplyAsync(() -> executionFunction.apply(args, isTags), featureRunner);
@@ -355,6 +357,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
 		List<URL> classpath = new ArrayList<URL>();
+
 		if (additionalClasspathElements != null) {
 			for (String element : additionalClasspathElements) {
 				try {
@@ -375,6 +378,20 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		getLog().debug("Output dir: " + outputDirectory.getAbsolutePath());
 		getLog().debug("classpathElements: " + additionalClasspathElements);
 
+	}
+
+	public void listLoadedClasses(ClassLoader byClassLoader) {
+		Class clKlass = byClassLoader.getClass();
+		getLog().debug("Classloader: " + clKlass.getCanonicalName());
+		try {
+			ClassPath.from(byClassLoader).getTopLevelClasses().stream().forEach(ci -> {
+				getLog().debug("Class loaded: " + ci.getSimpleName());
+			});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			getLog().error("Error in classload query" + e.getMessage());
+			// e.printStackTrace();
+		}
 	}
 
 }
