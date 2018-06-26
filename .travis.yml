@@ -2,7 +2,7 @@ sudo: false
 language: java
 deploy:
   provider: script
-  script: "mvn clean compile deploy"
+  script: "mvn deploy"
   skip_cleanup: true
 
 
