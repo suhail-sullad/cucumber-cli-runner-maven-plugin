@@ -263,9 +263,13 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 	public void executeUITests(final String[] argv) throws InterruptedException {
 		// TODO need to find an alternate runner which has better error handline
+		getLog().debug("Arguments set to ui tests");
+		for (String string : argv) {
+			getLog().debug(string);	
+		}
 		BiFunction<String[], Boolean, Supplier<Byte>> executeUITests = (args, tagOnly) -> {
 			try {
-				cucumber.api.cli.Main.run(args, CucumberRunnerMojo.class.getClassLoader());
+				cucumber.api.cli.Main.run(args, Thread.currentThread().getContextClassLoader());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				getLog().error("Exception occured: " + e.getMessage());

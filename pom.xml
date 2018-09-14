@@ -8,7 +8,7 @@
 
 	<groupId>cucumber.cli.runner.plugin</groupId>
 	<artifactId>cucumber-cli-runner-maven-plugin</artifactId>
-	<version>1.2.3-SNAPSHOT</version>
+	<version>1.2.5-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>cucumber-cli-runner-maven-plugin Maven Plugin</name>
@@ -27,7 +27,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.version>3.3.9</maven.version>
 		<jackson.version>2.9.0</jackson.version>
-		<myMavenRepoWriteUrl>https://mymavenrepo.com/repo/T97X6gW9qWfBM9hasNuq/</myMavenRepoWriteUrl>
+		<myMavenRepoWriteUrl>https://mymavenrepo.com/repo/tReITT57qLOLgZB1GMrJ/</myMavenRepoWriteUrl>
 	</properties>
 
 	<dependencies>
