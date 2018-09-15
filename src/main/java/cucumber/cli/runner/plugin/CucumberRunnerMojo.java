@@ -3,7 +3,6 @@ package cucumber.cli.runner.plugin;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -23,17 +22,13 @@ import net.masterthought.cucumber.ReportBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.instrument.Instrumentation;
-import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -51,7 +46,7 @@ import com.intuit.karate.filter.TagFilterException;
 /**
  * Goal which invokes custom cucumber runner.
  */
-@Mojo(name = "runcukes", defaultPhase = LifecyclePhase.TEST, requiresDependencyResolution = ResolutionScope.TEST, requiresProject = true)
+@Mojo(name = "runcukes", threadSafe = true, defaultPhase = LifecyclePhase.TEST, requiresDependencyResolution = ResolutionScope.TEST, requiresProject = true, requiresDependencyCollection = ResolutionScope.TEST)
 public class CucumberRunnerMojo extends AbstractMojo {
 	/**
 	 * Location of the file.
@@ -65,6 +60,15 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.testClasspathElements}", readonly = true)
 	private List<String> additionalClasspathElements = new ArrayList<>();
 
+	@Parameter(property = "project.testClasspathElements", required = true, readonly = true)
+	private List<String> testClasspathElements;
+
+	@Parameter(property = "project.compileClasspathElements", required = true, readonly = true)
+	private List<String> compileClasspathElements;
+	
+	@Parameter(property = "project.runtimeClasspathElements", required = true, readonly = true)
+	private List<String> runtimeClasspathElements;
+
 	private ExecutorService featureRunner = null;
 	private List<CompletableFuture<Supplier<Byte>>> featureStatus = new ArrayList<>();
 
@@ -72,8 +76,16 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		logConfiguration();
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		Thread.currentThread().setContextClassLoader(getClassLoader(classLoader));
+		getLog().debug(compileClasspathElements.toString());
+		getLog().debug(runtimeClasspathElements.toString());
+		getLog().debug(testClasspathElements.toString());
+		ClassLoader classLoader = CucumberRunnerMojo.class.getClassLoader();
+		try {
+			Thread.currentThread().setContextClassLoader(getClassLoader(classLoader));
+		} catch (DependencyResolutionRequiredException e1) {
+			getLog().error("Dependency resolution failed!! - classloader not set");
+			getLog().error(e1);
+		}
 		getLog().info("Initializing properties...");
 		listLoadedClasses(Thread.currentThread().getContextClassLoader());
 		PropertyLoader.init();
@@ -125,7 +137,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 
 			} catch (IOException | InterruptedException | TagFilterException | ExecutionException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				getLog().error(e);
 				getLog().error("Shutting down all threads");
 				featureRunner.shutdownNow();
 			} finally {
@@ -265,7 +277,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		// TODO need to find an alternate runner which has better error handline
 		getLog().debug("Arguments set to ui tests");
 		for (String string : argv) {
-			getLog().debug(string);	
+			getLog().debug(string);
 		}
 		BiFunction<String[], Boolean, Supplier<Byte>> executeUITests = (args, tagOnly) -> {
 			try {
@@ -303,7 +315,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 					getLog().info("Exit status from karate runner:" + runtime.exitStatus());
 					return () -> runtime.exitStatus();
 				} catch (Exception e) {
-					e.printStackTrace();
+					getLog().error(e);
 				}
 
 			}
@@ -359,8 +371,22 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		rp.generateReports();
 	}
 
-	private ClassLoader getClassLoader(ClassLoader classLoader) throws MojoExecutionException {
+	private ClassLoader getClassLoader(ClassLoader classLoader)
+			throws MojoExecutionException, DependencyResolutionRequiredException {
 		List<URL> classpath = new ArrayList<URL>();
+		Set<String> cumumativeClassPath = new HashSet<String>();
+		cumumativeClassPath.addAll(compileClasspathElements);
+		cumumativeClassPath.addAll(testClasspathElements);
+		cumumativeClassPath.addAll(runtimeClasspathElements);
+		for (String pcEntry : cumumativeClassPath) {
+			try {
+				File f = new File(pcEntry);
+				classpath.add(f.toURI().toURL());
+				getLog().debug("Added to classpath " + pcEntry);
+			} catch (Exception e) {
+				getLog().debug("Unable to load " + pcEntry + "Error:" + e.getMessage());
+			}
+		}
 
 		if (additionalClasspathElements != null) {
 			for (String element : additionalClasspathElements) {
@@ -385,7 +411,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 	}
 
 	public void listLoadedClasses(ClassLoader byClassLoader) {
-		Class clKlass = byClassLoader.getClass();
+		Class<? extends ClassLoader> clKlass = byClassLoader.getClass();
 		getLog().debug("Classloader: " + clKlass.getCanonicalName());
 		try {
 			ClassPath.from(byClassLoader).getTopLevelClasses().stream().forEach(ci -> {
@@ -394,7 +420,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			getLog().error("Error in classload query" + e.getMessage());
-			// e.printStackTrace();
+			// getLog().error(e);
 		}
 	}
 

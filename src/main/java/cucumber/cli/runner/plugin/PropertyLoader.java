@@ -25,11 +25,6 @@ public class PropertyLoader {
 	public static void init() {
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-		URL[] urls = ((URLClassLoader) cl).getURLs();
-
-		for (URL url : urls) {
-			System.out.println(url.getFile());
-		}
 		String[] propfiles = { "tests.properties", "browser.properties", "report.properties", "mailer.properties" };
 		List<Path> path = new ArrayList<>();
 		Arrays.stream(propfiles).forEach(file -> {

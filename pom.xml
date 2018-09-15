@@ -27,11 +27,11 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.version>3.3.9</maven.version>
 		<jackson.version>2.9.0</jackson.version>
-		<myMavenRepoWriteUrl>https://mymavenrepo.com/repo/tReITT57qLOLgZB1GMrJ/</myMavenRepoWriteUrl>
+		<myMavenRepoWriteUrl>https://mymavenrepo.com/repo/T97X6gW9qWfBM9hasNuq/</myMavenRepoWriteUrl>
 	</properties>
 
 	<dependencies>
-	<dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
@@ -115,8 +115,20 @@
 		<dependency>
 			<groupId>net.masterthought</groupId>
 			<artifactId>cucumber-reporting</artifactId>
-			<version>3.13.0</version>
+			<version>3.20.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>26.0-jre</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
@@ -128,6 +140,12 @@
 			<artifactId>maven-core</artifactId>
 			<version>${maven.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -159,6 +177,7 @@
 			<version>3.3.0</version>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
@@ -270,15 +289,15 @@
 		</profile>
 	</profiles>
 	<repositories>
-	
-				<repository>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-					<id>bintray-suhail-sullad-karate</id>
-					<name>bintray</name>
-					<url>https://dl.bintray.com/suhail-sullad/karate</url>
-				</repository>
+
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>bintray-suhail-sullad-karate</id>
+			<name>bintray</name>
+			<url>https://dl.bintray.com/suhail-sullad/karate</url>
+		</repository>
 		<repository>
 			<id>myMavenRepo</id>
 			<url>${myMavenRepoReadUrl}</url>
