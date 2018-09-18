@@ -36,10 +36,7 @@ public class CucumberRunnerMojoTest {
 	
 	@Test 
     public void testScenario() throws Exception {
-        //String reportPath = "target/scenario.json";
-        //File file = new File("C:\\Users\\suhail_sullad\\digicert-workspace\\plugintest\\src\\test\\resources\\features\\api\\test.feature");
-       // run(file, reportPath);
-       // assertTrue(contains(reportPath, "Then match b == { foo: 'bar'}"));
+     
     }
 
 }
