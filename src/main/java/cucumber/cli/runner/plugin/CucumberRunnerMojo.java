@@ -97,7 +97,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		featureRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2,
 				Executors.privilegedThreadFactory());
 		getLog().info("Creating output directories...");
-		String[] opDir = { outputDirectory.getPath() + "/cucumber-reports/api" };
+		String[] opDir = { outputDirectory.getPath() + "/cucumber-reports/api",outputDirectory.getPath() + "/cucumber-reports/ui" };
 		for (String string : opDir) {
 			try {
 				FileUtils.forceMkdir(new File(string));
@@ -181,7 +181,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 		arguments.add("--format");
 		arguments.add("pretty");
 		arguments.add("--format");
-		arguments.add("json:" + outputDirectory.getPath() + "/cucumber-reports/"
+		arguments.add("json:" + outputDirectory.getPath() + "/cucumber-reports/ui/"
 				+ DateTime.now().toDateTimeISO().toString("hhmmssddMMyyyy") + ".json");
 		List<String> tags = PropertyLoader.provider.getProperty("tagstorun", new GenericType<List<String>>() {
 		});
@@ -220,7 +220,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 			arguments.add("--format");
 			arguments.add("pretty");
 			arguments.add("--format");
-			arguments.add("json:" + outputDirectory.getPath() + "/cucumber-reports/"
+			arguments.add("json:" + outputDirectory.getPath() + "/cucumber-reports/ui/"+runnabletags+"_"
 					+ DateTime.now().toDateTimeISO().toString("hhmmssddMMyyyy") + ".json");
 			if (!runnabletags.contains("none")) {
 				arguments.add("--tags");
@@ -255,7 +255,7 @@ public class CucumberRunnerMojo extends AbstractMojo {
 			arguments.add("--format");
 			arguments.add("pretty");
 			arguments.add("--format");
-			arguments.add("json:" + outputDirectory.getPath() + "/cucumber-reports/"
+			arguments.add("json:" + outputDirectory.getPath() + "/cucumber-reports/ui/"+feature.substring(feature.lastIndexOf('/')+1,feature.length())+"_"
 					+ DateTime.now().toDateTimeISO().toString("hhmmssddMMyyyy") + ".json");
 
 			List<String> gluepackages = PropertyLoader.provider.getProperty("gluedpackages",
